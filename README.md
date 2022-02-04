@@ -1,6 +1,6 @@
 # model_view_controller_app
 A modern Model View Controller architecture with App organizer.
-![]()
+![](https://github.mathworks.com/pharouim/model_view_controller_app/blob/main/DependencyAnalysis.JPG)
 
 ## Instructions
 Please check the dev branch which is probably more recent than the master one.
