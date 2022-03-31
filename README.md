@@ -17,13 +17,8 @@ Also, there is another class, App, which will add the components.
   - **aApp**: main object instancing all the other - control the architecture (components) of the app and deployable to web app.
 
 
-### Other:  
+### Web app:  
 * The instantiated app is deployable as a web app  
-* I will soon implement and adapt the MATLAB Production Server connection  
-* I will soon implement and adapt the multi-windows capability
-
-## Contact
-Pierre Harouimi - pharouim@mathworks.com
 
 ## Relevant Products
 * MATLAB
