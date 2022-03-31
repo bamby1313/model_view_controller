@@ -5,11 +5,6 @@ classdef (Abstract) aApp < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & dy
         AppCreated
     end
     
-    %% ABSTRACT
-    properties (Abstract, Constant)
-        FILENAME string {mustBeNonzeroLengthText}
-    end
-
     methods (Abstract, Access = protected)
         hCloseRequestFcnImpl(obj, evt, src)
         hUnitsImpl(obj)
@@ -29,6 +24,7 @@ classdef (Abstract) aApp < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & dy
     
     properties (SetAccess = private, GetAccess = protected)
         name_           (1,1) string  = ""
+        filename_       (1,1) string  = ""
         status_         (1,1) logical = false % Is App ran?
     end
     properties (Access = protected)
@@ -46,15 +42,16 @@ classdef (Abstract) aApp < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & dy
 
     %% CONSTRUCTOR
     methods
-        function obj = aApp(varargin)
+        function obj = aApp(filename, varargin)
             narginchk(0,1)
             obj.listeners_(end+1) = event.proplistener(obj, findprop(obj, "mlapp_"), 'PostSet', @(~,~) obj.initApp);
             if ~isempty(varargin)
                 setProperties(varargin{:});
             end
-            [~, name, ext] = fileparts(obj.FILENAME);
+            [~, name, ext]  = fileparts(filename);
             assert(ext == ".mlapp", "Ensure the FILENAME property is a valid mlapp file.");
-            obj.name_ = name;                                                     
+            obj.name_       = name;  
+            obj.filename_   = filename;
         end
         function delete(obj)
             obj.status_ = false;
@@ -117,6 +114,9 @@ classdef (Abstract) aApp < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & dy
 
         function obj = run(obj, varargin)
             
+            % app is launched
+            obj.status_ = true;
+
             if ~isempty(obj.myFigure_) && isvalid(obj.myFigure_)
                 delete(obj.myFigure_.Children);
             end  
@@ -125,7 +125,7 @@ classdef (Abstract) aApp < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & dy
                 obj.mlapp_ = varargin{:};
             else
                 app        = str2func(obj.name_);
-                obj.mlapp_ = app();
+                obj.mlapp_ = app(obj);
             end
 
             % Build all components view
